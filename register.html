@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SwapCart — Register</title>
+  <link rel="stylesheet" href="auth.css" />
+
+</head>
+<body>
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="auth-page">
+        <div class="auth-card">
+          <h2>Create Account ✨</h2>
+          <p class="muted" style="text-align:center;margin-bottom:16px;">
+            Join SwapCart to shop, sell, and barter with others
+          </p>
+
+          <form id="register-form">
+            <input type="text" id="register-name" placeholder="Full Name" required />
+            <input type="email" id="register-email" placeholder="Email" required />
+            <input type="password" id="register-password" placeholder="Password" required />
+            <input type="password" id="register-confirm-password" placeholder="Confirm Password" required />
+            <button class="btn btn-primary" type="submit">Register</button>
+          </form>
+
+          <div id="register-alert" style="margin-top:10px;"></div>
+
+          <p class="muted" style="margin-top:20px;text-align:center;">
+            Already have an account? 
+            <a href="login.html" style="color:var(--accent-2);font-weight:700;">Login</a>
+          </p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = JSON.parse(localStorage.getItem('currentUser'));
+      if (user) window.location.href = 'index.html'; // redirect logged-in users
+    });
+  </script>
+</body>
+</html>

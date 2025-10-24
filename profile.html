@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SwapCart — Profile</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      background: #fafafa;
+      font-family: Arial, sans-serif;
+    }
+
+    .profile-container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .profile-header {
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+    }
+
+    .profile-header h2 {
+      margin: 0;
+      color: #333;
+    }
+
+    .profile-header p {
+      color: #777;
+      margin: 4px 0 0;
+      font-size: 14px;
+    }
+
+    .profile-form {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 40px;
+    }
+
+    .profile-left {
+      flex: 1;
+      min-width: 400px;
+    }
+
+    .profile-right {
+      width: 220px;
+      text-align: center;
+    }
+
+    .profile-right img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #ddd;
+      margin-bottom: 10px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 15px;
+      color: #333;
+    }
+
+    input[type="text"], input[type="email"], input[type="password"], input[type="date"] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .gender-group {
+      margin-top: 8px;
+    }
+
+    .gender-group input {
+      margin-right: 5px;
+    }
+
+    .save-btn {
+      background: #ff6a00;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .save-btn:hover {
+      background: #e65c00;
+    }
+
+    .logout-btn {
+      background: #ccc;
+      color: black;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    small {
+      display: block;
+      color: #888;
+      font-size: 12px;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container topbar">
+      <div class="brand"><a href="index.html" style="text-decoration:none;color:#6a00ff;">SwapCart</a></div>
+      <div class="actions">
+        <a href="index.html" class="icon-btn orange">Home</a>
+        
+      </div>
+    </div>
+  </header>
+
+  <main class="profile-container">
+    <div class="profile-header">
+      <h2>My Profile</h2>
+      <p>Manage and protect your account</p>
+    </div>
+
+    <form id="profile-form" class="profile-form">
+      <div class="profile-left">
+        <label>Username</label>
+        <input type="text" id="username" readonly>
+
+        <label>Name</label>
+        <input type="text" id="name">
+
+        <label>Email</label>
+        <input type="email" id="email" readonly>
+
+        <label>Phone Number</label>
+        <input type="text" id="phone">
+
+        <label>Gender</label>
+        <div class="gender-group">
+          <label><input type="radio" name="gender" value="Male"> Male</label>
+          <label><input type="radio" name="gender" value="Female"> Female</label>
+          <label><input type="radio" name="gender" value="Other"> Other</label>
+        </div>
+
+        <label>Date of Birth</label>
+        <input type="date" id="dob">
+
+        <button type="submit" class="save-btn">Save</button>
+        <button type="button" id="logout-btn" class="logout-btn">Logout</button>
+      </div>
+
+      <div class="profile-right">
+        <img id="profile-photo" src="default-avatar.png" alt="Profile Photo">
+        <input type="file" id="photo-upload" accept="image/*">
+        <small>File size: max 1MB<br>Formats: JPEG, PNG</small>
+      </div>
+    </form>
+  </main>
+
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = JSON.parse(localStorage.getItem('currentUser'));
+      if (!user) return window.location.href = 'login.html';
+
+      // Fill existing info
+      document.getElementById('username').value = user.username || user.email.split('@')[0];
+      document.getElementById('name').value = user.name || '';
+      document.getElementById('email').value = user.email || '';
+      document.getElementById('phone').value = user.phone || '';
+      document.getElementById('dob').value = user.dob || '';
+      if (user.gender) {
+        document.querySelector(`input[name="gender"][value="${user.gender}"]`).checked = true;
+      }
+      if (user.photo) {
+        document.getElementById('profile-photo').src = user.photo;
+      }
+
+      // Save changes
+      document.getElementById('profile-form').addEventListener('submit', e => {
+        e.preventDefault();
+        const name = document.getElementById('name').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const dob = document.getElementById('dob').value;
+        const gender = document.querySelector('input[name="gender"]:checked')?.value || user.gender;
+
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        const idx = users.findIndex(u => u.id === user.id);
+        if (idx === -1) return alert('User not found.');
+
+        users[idx] = { ...users[idx], name, phone, dob, gender, photo: user.photo };
+        localStorage.setItem('users', JSON.stringify(users));
+        localStorage.setItem('currentUser', JSON.stringify(users[idx]));
+
+        alert('Profile updated successfully!');
+      });
+
+      // Upload image
+      document.getElementById('photo-upload').addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (file.size > 1024 * 1024) return alert('File too large! Max 1MB.');
+
+        const reader = new FileReader();
+        reader.onload = ev => {
+          const imgData = ev.target.result;
+          document.getElementById('profile-photo').src = imgData;
+          user.photo = imgData;
+
+          let users = JSON.parse(localStorage.getItem('users')) || [];
+          const idx = users.findIndex(u => u.id === user.id);
+          if (idx !== -1) users[idx].photo = imgData;
+
+          localStorage.setItem('users', JSON.stringify(users));
+          localStorage.setItem('currentUser', JSON.stringify(user));
+        };
+        reader.readAsDataURL(file);
+      });
+
+      // Logout
+      document.getElementById('logout-btn').addEventListener('click', () => {
+        localStorage.removeItem('currentUser');
+        window.location.href = 'login.html';
+      });
+    });
+  </script>
+</body>
+</html>

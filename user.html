@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SwapCart — User Profile</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body { background:#fafafa; font-family:Arial, sans-serif; }
+
+    .user-card {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+
+    .user-photo {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #ddd;
+    }
+
+    .user-info { flex: 1; }
+    .user-info h2 { margin: 0; color:#333; }
+    .user-info p { margin: 5px 0; color:#666; }
+
+    .action-buttons {
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .follow-btn, .chat-btn {
+      background: #ff6a00;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 15px;
+      cursor: pointer;
+    }
+    .follow-btn.following {
+      background: #777;
+    }
+
+    .chat-section {
+      max-width: 800px;
+      margin: 30px auto;
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .chat-messages {
+      height: 250px;
+      overflow-y: auto;
+      border: 1px solid #eee;
+      border-radius: 5px;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #fafafa;
+    }
+    .msg {
+      padding: 6px 10px;
+      margin-bottom: 6px;
+      border-radius: 8px;
+      display: inline-block;
+      max-width: 70%;
+      word-wrap: break-word;
+    }
+    .msg.me {
+      background: #ff6a00;
+      color: #fff;
+      align-self: flex-end;
+      float: right;
+      clear: both;
+    }
+    .msg.them {
+      background: #eaeaea;
+      color: #333;
+      float: left;
+      clear: both;
+    }
+    .chat-input {
+      display: flex;
+      gap: 10px;
+    }
+    .chat-input input {
+      flex: 1;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .chat-input button {
+      background: #ff6a00;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 15px;
+      cursor: pointer;
+    }
+
+    .product-list {
+      max-width: 900px;
+      margin: 30px auto;
+    }
+    .product-card {
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #fff;
+      cursor: pointer;
+    }
+    .product-card:hover {
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container topbar">
+      <div class="brand"><a href="index.html" style="text-decoration:none;color:#2200ff;">SwapCart</a></div>
+      <div class="actions">
+        <a href="index.html" class="icon-btn orange">Home</a>
+        <a href="cart.html" class="icon-btn orange">Cart</a>
+        <a href="barter.html" class="icon-btn orange">Barter</a>
+        <a href="seller.html" class="icon-btn orange">Seller</a>
+        <a href="profile.html" class="icon-btn orange">My Profile</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div id="user-details" class="user-card"></div>
+    <div id="seller-products" class="product-list"></div>
+
+    <div id="chat-area" class="chat-section" style="display:none;">
+      <h3>Private Chat</h3>
+      <div id="chat-messages" class="chat-messages"></div>
+      <div class="chat-input">
+        <input id="chat-input" placeholder="Type a message...">
+        <button id="chat-send">Send</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const STORAGE = {
+        USERS: 'users',
+        CURRENT_USER: 'currentUser',
+        PRODUCTS: 'products',
+        MESSAGES: 'messages',
+        FOLLOWS: 'follows'
+      };
+
+      const currentUser = JSON.parse(localStorage.getItem(STORAGE.CURRENT_USER));
+      const users = JSON.parse(localStorage.getItem(STORAGE.USERS)) || [];
+      const products = JSON.parse(localStorage.getItem(STORAGE.PRODUCTS)) || [];
+      const messages = JSON.parse(localStorage.getItem(STORAGE.MESSAGES)) || [];
+      let follows = JSON.parse(localStorage.getItem(STORAGE.FOLLOWS)) || [];
+
+      const params = new URLSearchParams(window.location.search);
+      const userId = parseInt(params.get('id'));
+      const user = users.find(u => u.id === userId);
+      const container = document.getElementById('user-details');
+
+      if (!user) {
+        container.innerHTML = '<div class="card">User not found.</div>';
+        return;
+      }
+
+      // Header Info
+      container.innerHTML = `
+        <img src="${user.photo || 'default-avatar.png'}" class="user-photo" alt="${user.name}">
+        <div class="user-info">
+          <h2>${user.name}</h2>
+          <p><strong>Email:</strong> ${user.email}</p>
+          <p><strong>Phone:</strong> ${user.phone || '—'}</p>
+          <p><strong>Gender:</strong> ${user.gender || '—'}</p>
+          <p><strong>Date of Birth:</strong> ${user.dob || '—'}</p>
+          <div class="action-buttons" id="user-actions"></div>
+        </div>
+      `;
+
+      // Buttons: Follow & Chat
+      const actions = document.getElementById('user-actions');
+      if (currentUser && currentUser.id !== userId) {
+        const isFollowing = follows.some(f => f.followerId === currentUser.id && f.followedId === userId);
+        const followBtn = document.createElement('button');
+        followBtn.className = 'follow-btn' + (isFollowing ? ' following' : '');
+        followBtn.textContent = isFollowing ? 'Following' : 'Follow';
+        followBtn.onclick = () => toggleFollow(followBtn);
+        actions.appendChild(followBtn);
+
+        const chatBtn = document.createElement('button');
+        chatBtn.className = 'chat-btn';
+        chatBtn.textContent = 'Message';
+        chatBtn.onclick = () => openChat();
+        actions.appendChild(chatBtn);
+      }
+
+      // Seller Products
+      const userProducts = products.filter(p => p.sellerId === userId);
+      const list = document.getElementById('seller-products');
+      if (userProducts.length > 0) {
+        list.innerHTML = `<h3>Items Listed by ${user.name}</h3>`;
+        userProducts.forEach(p => {
+          const el = document.createElement('div');
+          el.className = 'product-card';
+          el.innerHTML = `<strong>${p.name}</strong><br>₱${p.price.toFixed(2)} • ${p.category}`;
+          el.onclick = () => viewProduct(p.id);
+          list.appendChild(el);
+        });
+      } else {
+        list.innerHTML = `<p>${user.name} has not listed any products yet.</p>`;
+      }
+
+      // FOLLOW FEATURE
+      function toggleFollow(btn) {
+        const isFollowing = follows.some(f => f.followerId === currentUser.id && f.followedId === userId);
+        if (isFollowing) {
+          follows = follows.filter(f => !(f.followerId === currentUser.id && f.followedId === userId));
+          btn.classList.remove('following');
+          btn.textContent = 'Follow';
+        } else {
+          follows.push({ followerId: currentUser.id, followedId: userId });
+          btn.classList.add('following');
+          btn.textContent = 'Following';
+        }
+        localStorage.setItem(STORAGE.FOLLOWS, JSON.stringify(follows));
+      }
+
+      // CHAT FEATURE
+      const chatArea = document.getElementById('chat-area');
+      const chatMessages = document.getElementById('chat-messages');
+      const chatInput = document.getElementById('chat-input');
+      const chatSend = document.getElementById('chat-send');
+
+      function openChat() {
+        chatArea.style.display = 'block';
+        loadMessages();
+      }
+
+      chatSend.addEventListener('click', sendMessage);
+      chatInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter') sendMessage();
+      });
+
+      function sendMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+        const msg = {
+          id: Date.now(),
+          senderId: currentUser.id,
+          receiverId: userId,
+          text,
+          timestamp: new Date().toISOString()
+        };
+        messages.push(msg);
+        localStorage.setItem(STORAGE.MESSAGES, JSON.stringify(messages));
+        chatInput.value = '';
+        loadMessages();
+      }
+
+      function loadMessages() {
+        chatMessages.innerHTML = '';
+        const thread = messages.filter(m =>
+          (m.senderId === currentUser.id && m.receiverId === userId) ||
+          (m.senderId === userId && m.receiverId === currentUser.id)
+        );
+        thread.sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp));
+        thread.forEach(m => {
+          const el = document.createElement('div');
+          el.className = 'msg ' + (m.senderId === currentUser.id ? 'me' : 'them');
+          el.textContent = m.text;
+          chatMessages.appendChild(el);
+        });
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>View Seller — SwapCart</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .seller-header {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .seller-products {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container topbar">
+      <div class="brand"><a href="index.html" style="text-decoration:none;color:#1500ff;">SwapCart</a></div>
+      <div class="actions">
+        <a href="index.html" class="icon-btn orange">Home</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="seller-header">
+      <h2 id="seller-name"></h2>
+      <p id="seller-email"></p>
+    </div>
+
+    <h3>🛍️ Seller's Products</h3>
+    <div id="seller-products" class="seller-products"></div>
+  </main>
+  
+
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const sellerId = parseInt(params.get('id'));
+
+      const users = JSON.parse(localStorage.getItem('users')) || [];
+      const products = JSON.parse(localStorage.getItem('products')) || [];
+
+      const seller = users.find(u => u.id === sellerId);
+      const list = document.getElementById('seller-products');
+
+      if (!seller) {
+        document.getElementById('seller-name').textContent = 'Seller not found.';
+        return;
+      }
+
+      document.getElementById('seller-name').textContent = seller.name;
+      document.getElementById('seller-email').textContent = `📧 ${seller.email}`;
+
+      const sellerProducts = products.filter(p => p.sellerId === sellerId);
+
+      if (sellerProducts.length === 0) {
+        list.innerHTML = '<div class="card">No products yet from this seller.</div>';
+        return;
+      }
+
+      list.innerHTML = sellerProducts.map(p => `
+        <div class="product-card" onclick="viewProduct(${p.id})">
+          <div class="product-media">
+            ${p.image ? `<img src="${p.image}" alt="${p.name}">` : `<div>${p.name}</div>`}
+          </div>
+          <div class="product-body">
+            <div class="product-title">${p.name}</div>
+            <div class="product-price">₱${Number(p.price).toFixed(2)}</div>
+            
+          </div>
+        </div>
+      `).join('');
+    });
+  </script>
+  
+</body>
+</html>

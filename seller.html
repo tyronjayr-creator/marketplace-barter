@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SwapCart — Seller Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container topbar">
+      <div class="brand"><a href="home.html" style="text-decoration:none;color:#1e00ff;">SwapCart</a></div>
+      <div class="actions">
+        <a href="index.html" class="icon-btn orange">Home</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <h2>Seller Dashboard</h2>
+    <div class="seller-grid">
+      <div class="card">
+        <h3>Add Product</h3>
+        <form id="seller-form">
+          <input id="seller-product-name" placeholder="Product name" required />
+          <textarea id="seller-product-description" placeholder="Product description" rows="3" required></textarea>
+          <input id="seller-product-price" placeholder="Price (₱)" type="number" min="1" required />
+          <input id="seller-product-quantity" placeholder="Quantity" type="number" min="1" required />
+          <input id="seller-product-photo" type="file" accept="image/*" />
+          <button class="btn orange">Add Product</button>
+        </form>
+      </div>
+
+      <div class="card" style="flex:1">
+        <h3>Your Products</h3>
+        <div id="seller-products-list"></div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px">
+      <h3>Your Barter Proposals</h3>
+      <div id="my-barter-proposals"></div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+  
+</body>
+</html>

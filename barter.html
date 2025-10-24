@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SwapCart — Barter</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container topbar">
+      <div class="brand"><a href="home.html" style="text-decoration:none;color:#6a00ff;">SwapCart</a></div>
+      <div class="actions">
+        <a href="index.html" class="icon-btn orange">Home</a>
+        <a href="barter-dashboard.html" class="icon-btn orange">Dashboard</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <h2>Barter Center</h2>
+    <div class="barter-grid">
+      <div class="card">
+        <h3>Post Item for Barter</h3>
+        <div id="barter-alert"></div>
+        <form id="barter-form">
+          <input id="barter-title" placeholder="Title" required />
+          <textarea id="barter-description" placeholder="Description" rows="3" required></textarea>
+          <input id="barter-photo" type="file" accept="image/*" />
+          <button class="btn orange">Post for Barter</button>
+        </form>
+      </div>
+
+      <div class="card" style="flex:1">
+        <h3>Available Barter Offers</h3>
+        <div id="barter-items-list"></div>
+      </div>
+    </div>
+    <!-- Private Message Modal -->
+<div id="chat-modal" class="modal" style="display:none;">
+  <div class="modal-content card" style="max-width:600px;margin:auto;">
+    <h3 id="chat-with-name">Private Chat</h3>
+    <div id="chat-messages" style="max-height:300px;overflow-y:auto;border:1px solid #ccc;padding:10px;margin-bottom:10px;"></div>
+    <textarea id="chat-input" rows="2" placeholder="Type your message..."></textarea>
+    <button class="btn orange" id="send-chat-btn">Send</button>
+    <button class="btn" onclick="closeChat()">Close</button>
+  </div>
+</div>
+
+  </main>
+
+
+  <script src="script.js"></script>
+  
+</body>
+</html>

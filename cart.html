@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SwapCart — Cart</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container topbar">
+      <div class="brand"><a href="home.html" style="text-decoration:none;color:#6a00ff;">SwapCart</a></div>
+      <div class="actions">
+        <a href="index.html" class="icon-btn orange">Home</a>
+    </div>
+  </header>
+
+  <main class="container">
+  <h2>Your Cart</h2>
+  <div id="cart-items" class="card"></div>
+  <div class="card checkout">
+    <div id="cart-total">Total: ₱0.00</div>
+    <form id="checkout-form">
+      <input id="checkout-name" placeholder="Full name" required />
+      <input id="checkout-address" placeholder="Delivery address" required />
+      <input id="checkout-phone" placeholder="Phone number" type="tel" required />
+      <div class="payment-row">
+        <label><input type="radio" name="payment" value="gcash" id="gcash" /> GCash</label>
+        <label><input type="radio" name="payment" value="cod" id="cod" /> Cash on Delivery</label>
+      </div>
+      <div id="gcash-details" class="gcash-details" style="display:none;">
+        <input id="gcash-number" placeholder="GCash number (11 digits)" pattern="[0-9]{11}" />
+        <input id="gcash-name" placeholder="GCash account name" />
+      </div>
+      <button class="btn orange">Complete Purchase</button>
+    </form>
+  </div>
+</main>
+
+
+  <script src="script.js"></script>
+  
+
+</body>
+</html>

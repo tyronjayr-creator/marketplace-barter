@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SwapCart — Forgot Password</title>
+  <link rel="stylesheet" href="auth.css" />
+
+</head>
+<body>
+  
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="auth-page">
+        <div class="auth-card">
+          <h2>Reset Password 🔑</h2>
+          <p class="muted" style="text-align:center;margin-bottom:16px;">
+            Enter your email and a new password below
+          </p>
+
+          <form id="forgot-form">
+            <input type="email" id="forgot-email" placeholder="Email Address" required />
+            <input type="password" id="forgot-new-password" placeholder="New Password" required />
+            <button class="btn btn-primary" type="submit">Reset Password</button>
+          </form>
+
+          <div id="forgot-alert" style="margin-top:10px;"></div>
+
+          <p class="muted" style="margin-top:20px;text-align:center;">
+            Remembered your password? 
+            <a href="login.html" style="color:var(--accent-2);font-weight:700;">Login</a><br>
+            Need an account? 
+            <a href="register.html" style="color:var(--accent-1);font-weight:700;">Register</a>
+          </p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = JSON.parse(localStorage.getItem('currentUser'));
+      if (user) window.location.href = 'index.html'; // redirect logged-in users
+    });
+  </script>
+</body>
+</html>

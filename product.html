@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SwapCart — Product</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .product-page {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-top: 30px;
+    }
+    .product-img {
+      flex: 1;
+      min-width: 280px;
+      text-align: center;
+    }
+    .product-img img {
+      width: 100%;
+      max-width: 350px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+    }
+    .product-info {
+      flex: 2;
+      min-width: 320px;
+    }
+    .product-info h2 {
+      color: #333;
+      margin-bottom: 8px;
+    }
+    .product-price {
+      color: #ff6a00;
+      font-size: 1.6em;
+      margin-bottom: 10px;
+    }
+    .product-meta {
+      color: #777;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+    .buy-btn, .cart-btn {
+      display: inline-block;
+      margin-right: 10px;
+      padding: 10px 20px;
+      background: #ff6a00;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .cart-btn {
+      background: #333;
+    }
+    .cart-btn:hover, .buy-btn:hover {
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container topbar">
+      <div class="brand"><a href="index.html" style="text-decoration:none;color:#ff6a00;">SwapCart</a></div>
+      <div class="actions">
+        <a href="index.html" class="icon-btn orange">Home</a>
+        
+        
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+  <div id="product-details" class="product-page"></div>
+
+  <section id="reviews-section" class="card" style="margin-top:30px; padding:20px;">
+    <h3>🗨️ Reviews & Comments</h3>
+
+    <div id="reviews-list" style="margin-top:15px;"></div>
+
+    <div id="review-form" style="margin-top:20px;">
+      <h4>Leave a Review</h4>
+      <textarea id="review-text" rows="3" placeholder="Write your comment here..." style="width:100%;padding:10px;border-radius:6px;border:1px solid #ccc;"></textarea>
+      <div style="margin-top:10px;">
+        Rating:
+        <select id="review-rating">
+          <option value="5">⭐⭐⭐⭐⭐</option>
+          <option value="4">⭐⭐⭐⭐</option>
+          <option value="3">⭐⭐⭐</option>
+          <option value="2">⭐⭐</option>
+          <option value="1">⭐</option>
+        </select>
+      </div>
+      <button class="buy-btn" style="margin-top:10px;" onclick="submitReview()">Submit Review</button>
+    </div>
+  </section>
+</main>
+
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const productId = parseInt(params.get('id'));
+      const products = JSON.parse(localStorage.getItem('products')) || [];
+      const product = products.find(p => p.id === productId);
+
+      if (!product) {
+        document.getElementById('product-details').innerHTML = '<div class="card">Product not found.</div>';
+        return;
+      }
+
+      const html = `
+        <div class="product-img">
+          ${product.image ? `<img src="${product.image}" alt="${product.name}">` : `<div class="card">${product.name}</div>`}
+        </div>
+        <div class="product-info">
+          <h2>${product.name}</h2>
+         <p>This is a product listing on SwapCart. You can purchase or barter this item just like on Shopee.</p>
+<div style="margin-top:15px;">
+  <div style="display:flex; flex-wrap:wrap; gap:10px;">
+    <button class="buy-btn" onclick="buyNow(${product.id})">Buy Now</button>
+    <button class="cart-btn" onclick="addToCart(${product.id})">Add to Cart</button>
+    <button id="fav-btn" class="icon-btn orange" onclick="toggleFavorite(${product.id}); updateFavoriteIcon(${product.id});">
+      ❤️ Favorite
+    </button>
+  </div>
+
+  <div style="margin-top:20px; text-align:center;">
+    <button class="view-seller-btn" onclick="viewSeller(${product.sellerId})">👤 View Seller</button>
+  </div>
+</div>
+
+
+      `;
+      document.getElementById('product-details').innerHTML = html;
+    });
+
+    function buyNow(id) {
+      addToCart(id);
+      window.location.href = 'cart.html';
+    }
+  </script>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const productId = parseInt(params.get('id'));
+    loadProductDetails(productId);
+    loadReviews(productId);
+  });
+</script>
+</body>
+</html>
